@@ -30,10 +30,13 @@ jobs:
 
       - name: Install npm deps
         run: npm i
-        
+
       - name: Build
         run: npm run build
-      
+
+     - name: Fix paths
+        run: sed -i 's/\/assets/.\/assets/' dist/index.html
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
