@@ -6,7 +6,7 @@ import styles from "./Game.module.scss";
 const Game: Component = () => {
 	const columnCount = 4;
 	const rowCount = 10;
-	const chosenColors = [...Array(columnCount).keys()].map(getRandomColor);
+	const chosenColors = Array.from({ length: columnCount }, getRandomColor);
 	console.log(chosenColors);
 	return <>
 		<h1 class={styles.title}>Mastermind</h1>
