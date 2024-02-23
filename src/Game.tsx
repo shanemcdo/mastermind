@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { For, createEffect, createSignal } from "solid-js";
+import { For, createSignal } from "solid-js";
 import { grey, colors, getRandomColor } from "./colors";
 import Peg from "./Peg";
 import ButtonResults from "./ButtonResults";
@@ -10,8 +10,11 @@ const Game: Component = () => {
 	const rowCount = 10;
 	const [showChosen, setShowChosen] = createSignal(false);
 	const chosenColors = Array.from({ length: columnCount }, getRandomColor);
-	const grid = Array.from({ length: rowCount }, () =>
-		Array.from({ length: columnCount }, () => createSignal(''))
+	const grid = Array.from({ length: rowCount }, (_, i) =>
+		({
+			row: Array.from({ length: columnCount }, () => createSignal('')),
+			disabledPegsSignal: createSignal(i !== 0),
+		})
 	)
 	return <>
 		<div class={styles.vflex}>
@@ -26,22 +29,25 @@ const Game: Component = () => {
 				}</For>
 			</div>
 			<div class={styles.grid}>
-				<For each={grid}>{ row => {
+				<For each={grid}>{ ({ row, disabledPegsSignal }, i) => {
 					const displayButton = () => !row.some(([get, _]) => get() === '');
-					const completedRowSignal = createSignal(false);
-					const [completedRow, _] = completedRowSignal;
-					createEffect(() => console.log('game', completedRow()))
+					const [disabledPegs, _] = disabledPegsSignal;
 					return <>
 						<For each={row}>{ color =>
 							<Peg
 								color={color}
-								enabled={!completedRow()}
+								enabled={!disabledPegs()}
 								size="4rem"
 							/>
 						}</For>
 						<ButtonResults
-							completedSignal={completedRowSignal}
+							completedSignal={disabledPegsSignal}
 							display={displayButton()}
+							onclick={() => {
+								const idx = i() + 1;
+								if(idx >= grid.length) return;
+								grid[idx].disabledPegsSignal[1](false);
+							}}
 						/>
 					</>
 				}}</For>

@@ -13,6 +13,7 @@ type Props = {
 
 const Peg: Component<Props> = (props: Props) => {
 	const [showingModal, setShowingModal] = createSignal(false);
+	const toggleModal = () => setShowingModal(b => !b);
 	const enabled = () => props.enabled ?? true;
 	const [pegColor, setPegColor] = (typeof props.color === 'string') ?
 			createSignal(props.color) :
@@ -26,11 +27,11 @@ const Peg: Component<Props> = (props: Props) => {
 			background: pegColor(),
 			'--size': props.size,
 		}}
-		onclick={
-			enabled() ?
-			(props.onclick ?? (() => setShowingModal(b => !b))) :
-			(() => {})
-		}
+		onclick={ e => {
+			if(enabled()){
+				(props.onclick ?? toggleModal)(e)
+			}
+		}}
 	>
 		<Show when={enabled() && props.onclick === undefined && !props.static && showingModal()}>
 			<div class={styles.modal}>

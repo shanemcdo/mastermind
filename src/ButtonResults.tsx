@@ -27,6 +27,7 @@ type Props = {
 	completedSignal: Signal<boolean>
 	values?: [Answer, Answer, Answer, Answer],
 	display?: boolean,
+	onclick?: () => void,
 };
 
 
@@ -44,7 +45,12 @@ const ButtonResults: Component<Props> = props => {
 						[styles.button]: true,
 						[styles.clickable]: true,
 					}}
-					onclick={() => setClicked(true)}
+					onclick={() => {
+						setClicked(true);
+						if(props.onclick) {
+							props.onclick();
+						}
+					}}
 				>✓</button>
 			}
 		>
