@@ -1,9 +1,14 @@
-import type { Component } from "solid-js";
+import type { Component, Signal } from "solid-js";
+import { Answer } from "./ButtonResults";
 import { For, createSignal } from "solid-js";
 import { grey, colors, getRandomColor } from "./colors";
 import Peg from "./Peg";
 import ButtonResults from "./ButtonResults";
 import styles from "./Game.module.scss";
+
+function arrayCount<T>(arr: T[], target: T): number {
+	return arr.filter(x => x === target).length;
+}
 
 const Game: Component = () => {
 	const columnCount = 4;
@@ -16,6 +21,30 @@ const Game: Component = () => {
 			disabledPegsSignal: createSignal(i !== 0),
 		})
 	)
+	function calculateResults(row: Signal<string>[]): Answer[] {
+		const arr = row.map(x => x[0]());
+		const result: Answer[] = [];
+		for(let i = 0; i < arr.length; i++) {
+			if(arr[i] === chosenColors[i]) {
+				result.push(Answer.CorrectColorCorrectSpot);
+			}
+		}
+		// TODO fix this algo
+		for(let i = 0; i < arr.length; i++) {
+			const colorCount = arrayCount(chosenColors, arr[i]);
+			if(
+				colorCount > 0 &&
+				arr[i] !== chosenColors[i] &&
+				arrayCount(arr, arr[i]) <= colorCount
+			) {
+				result.push(Answer.CorrectColorWrongSpot);
+			}
+		}
+		while(result.length < 4) {
+			result.push(Answer.WrongColorWrongSpot);
+		}
+		return result;
+	}
 	return <>
 		<div class={styles.vflex}>
 			<h1 class={styles.title}>Mastermind</h1>
@@ -41,6 +70,7 @@ const Game: Component = () => {
 							/>
 						}</For>
 						<ButtonResults
+							values={calculateResults(row)}
 							completedSignal={disabledPegsSignal}
 							display={displayButton()}
 							onclick={() => {

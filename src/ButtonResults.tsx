@@ -4,7 +4,7 @@ import { grey } from "./colors";
 import Peg from "./Peg";
 import styles from "./ButtonResults.module.scss";
 
-enum Answer {
+export enum Answer {
 	CorrectColorCorrectSpot = 0,
 	CorrectColorWrongSpot,
 	WrongColorWrongSpot,
@@ -25,7 +25,7 @@ const defaultAnswers = [
 
 type Props = {
 	completedSignal: Signal<boolean>
-	values?: [Answer, Answer, Answer, Answer],
+	values?: Answer[],
 	display?: boolean,
 	onclick?: () => void,
 };
