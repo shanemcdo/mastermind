@@ -1,0 +1,9 @@
+@import "globals";
+
+.grid {
+	@include grid(2, 5px);
+}
+
+.button {
+	@include circle(3rem);
+}

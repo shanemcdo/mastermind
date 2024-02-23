@@ -1,0 +1,18 @@
+@mixin grid($cols, $gap) {
+	display: grid;
+	justify-items: center;
+	align-items: center;
+	margin: auto;
+	grid-template-columns: repeat($cols, 1fr);
+	gap: $gap;
+}
+
+@mixin circle($size) {
+	border-radius: 100%;
+	width: $size;
+	height: $size;
+}
+
+.clickable {
+	cursor: pointer;
+}

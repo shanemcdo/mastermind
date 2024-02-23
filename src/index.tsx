@@ -4,6 +4,7 @@ import type { RouteSectionProps } from '@solidjs/router';
 import { Router, Route } from '@solidjs/router';
 import { render } from 'solid-js/web';
 import Game from './Game';
+import './index.scss';
 
 const root = document.getElementById('root');
 

@@ -9,6 +9,7 @@ function calculateColors(): Array<string> {
 	return result;
 }
 
+export const grey = 'grey';
 export const colors = calculateColors();
 
 export function getRandomColor(): string {

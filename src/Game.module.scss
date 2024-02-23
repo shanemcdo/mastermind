@@ -1,3 +1,23 @@
+@import "globals";
+
+$gap: 10px;
+
+.vflex {
+	display: flex;
+	margin: auto;
+	flex-direction: column;
+	width: 60%;
+}
+
 .title {
 	text-align: center;
+}
+
+.row {
+	@include grid(4, $gap);
+}
+
+.grid {
+	@include grid(5, $gap);
+	margin-top: $gap;
 }
