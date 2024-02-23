@@ -3,4 +3,18 @@
 .peg {
 	@include circle(var(--size));
 	border: 1px solid black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal {
+	background: grey;
+	border-radius: 1rem;
+	transform: translateY(1rem);
+	display: flex;
+
+	.peg {
+		margin: 5px;
+	}
 }
