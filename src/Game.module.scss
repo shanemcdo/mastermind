@@ -21,3 +21,12 @@ $gap: 10px;
 	@include grid(5, $gap);
 	margin-top: $gap;
 }
+
+.medium {
+	--size: 3rem;
+}
+
+.large {
+	
+	--size: 4rem;
+}

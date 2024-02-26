@@ -57,8 +57,8 @@ const ButtonResults: Component<Props> = props => {
 			<div class={styles.grid}>
 				<For each={props.values ?? defaultAnswers}>{ answer =>
 					<Peg
+						class={styles.small}
 						color={answerColors[answer]}
-						size="1rem"
 						static
 					/>
 				}</For>

@@ -4,8 +4,8 @@ import { colors } from "./colors"
 import styles from "./Peg.module.scss";
 
 type Props = {
+	class: string,
 	color: string | Signal<string>,
-	size: string,
 	enabled?: boolean,
 	static?: boolean,
 	onclick?: (e: MouseEvent) => void,
@@ -23,12 +23,12 @@ const Peg: Component<Props> = (props: Props) => {
 			];
 	return <div
 		classList={{
+			[props.class]: true,
 			[styles.peg]: true,
 			[styles.clickable]: enabled() && (!props.static || props.onclick !== undefined),
 		}}
 		style={{
 			background: pegColor(),
-			'--size': props.size,
 		}}
 		onclick={ e => {
 			if(enabled()){
@@ -41,7 +41,6 @@ const Peg: Component<Props> = (props: Props) => {
 			<For each={colors}>{color =>
 				<Peg
 					color={color}
-					size="2rem"
 					onclick={() => {
 						setPegColor(color);
 						setShowingModal(false);

@@ -52,8 +52,8 @@ const Game: Component = () => {
 			<div class={styles.row}>
 				<For each={chosenColors}>{ color =>
 					<Peg
+						class={styles.medium}
 						color={showChosen() ? color : grey}
-						size="3rem"
 						static
 					/>
 				}</For>
@@ -65,9 +65,9 @@ const Game: Component = () => {
 					return <>
 						<For each={row}>{ color =>
 							<Peg
+								class={styles.large}
 								color={color}
 								enabled={!disabledPegs()}
-								size="4rem"
 							/>
 						}</For>
 						<ButtonResults

@@ -1,7 +1,9 @@
 @import "globals";
 
 .peg {
-	@include circle(var(--size));
+	--calc1-size: var(--size);
+	--calc2-size: var(--calc1-size);
+	@include circle(var(--calc2-size));
 	border: 1px solid black;
 	display: flex;
 	justify-content: center;
@@ -16,5 +18,12 @@
 
 	.peg {
 		margin: 5px;
+		--calc1-size: calc(var(--size) / 2);
+	}
+}
+
+@media only screen and (max-width: 700px) {
+	.peg {
+		--calc2-size: calc(var(--calc1-size) * 0.7) !important;
 	}
 }
