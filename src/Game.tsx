@@ -1,14 +1,10 @@
 import type { Component, Signal } from "solid-js";
 import { Answer } from "./ButtonResults";
-import { For, createSignal } from "solid-js";
+import { For, createEffect, createSignal } from "solid-js";
 import { grey, colors, getRandomColor } from "./colors";
 import Peg from "./Peg";
 import ButtonResults from "./ButtonResults";
 import styles from "./Game.module.scss";
-
-function arrayCount<T>(arr: T[], target: T): number {
-	return arr.filter(x => x === target).length;
-}
 
 const Game: Component = () => {
 	const columnCount = 4;
@@ -23,33 +19,38 @@ const Game: Component = () => {
 	)
 	function calculateResults(row: Signal<string>[]): Answer[] {
 		const arr = row.map(x => x[0]());
+		const chosen = [...chosenColors];
+		console.log(arr, chosen);
 		const result: Answer[] = [];
 		for(let i = 0; i < arr.length; i++) {
-			if(arr[i] === chosenColors[i]) {
+			if(arr[i] === chosen[i]) {
+				arr[i] = chosen[i] =  '';
 				result.push(Answer.CorrectColorCorrectSpot);
 			}
 		}
-		// TODO fix this algo
 		for(let i = 0; i < arr.length; i++) {
-			const colorCount = arrayCount(chosenColors, arr[i]);
-			if(
-				colorCount > 0 &&
-				arr[i] !== chosenColors[i] &&
-				arrayCount(arr, arr[i]) <= colorCount
-			) {
+			if(arr[i] === '') continue;
+			const j = chosen.indexOf(arr[i]);
+			if(j >= 0) {
+				chosen[j] = '';
 				result.push(Answer.CorrectColorWrongSpot);
 			}
 		}
 		while(result.length < 4) {
 			result.push(Answer.WrongColorWrongSpot);
 		}
+		if(result.every(x => x === Answer.CorrectColorCorrectSpot)){
+			setShowChosen(true);
+		}
+		console.log(result);
 		return result;
 	}
+	createEffect(() => console.log(showChosen()));
 	return <>
 		<div class={styles.vflex}>
 			<h1 class={styles.title}>Mastermind</h1>
 			<div class={styles.row}>
-				<For each={chosenColors}>{ (color: string) =>
+				<For each={chosenColors}>{ color =>
 					<Peg
 						color={showChosen() ? color : grey}
 						size="3rem"
