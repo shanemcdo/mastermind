@@ -30,3 +30,13 @@ $gap: 10px;
 	
 	--size: 4rem;
 }
+
+.modal {
+	background: grey;
+	position: absolute;
+	padding: 10px;
+	margin: auto;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

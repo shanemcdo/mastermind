@@ -1,22 +1,38 @@
 import type { Component, Signal } from "solid-js";
 import { Answer } from "./ButtonResults";
-import { For, createEffect, createSignal } from "solid-js";
+import { For, Show, createSignal } from "solid-js";
 import { grey, colors, getRandomColor } from "./colors";
 import Peg from "./Peg";
 import ButtonResults from "./ButtonResults";
 import styles from "./Game.module.scss";
+import { Portal } from "solid-js/web";
 
 const Game: Component = () => {
 	const columnCount = 4;
 	const rowCount = 10;
-	const [showChosen, setShowChosen] = createSignal(false);
-	const chosenColors = Array.from({ length: columnCount }, getRandomColor);
+	const [gameOver, setGameOver] = createSignal(false);
+	const [playerWon, setPlayerWon] = createSignal(true);
+	const getChosenColors = () => Array.from({ length: columnCount }, getRandomColor);
+	let chosenColors = getChosenColors();
 	const grid = Array.from({ length: rowCount }, (_, i) =>
 		({
 			row: Array.from({ length: columnCount }, () => createSignal('')),
 			disabledPegsSignal: createSignal(i !== 0),
 		})
 	)
+	function reset() {
+		setGameOver(false);
+		setPlayerWon(true);
+		chosenColors = getChosenColors();
+		let i = 0;
+		for(const { row, disabledPegsSignal } of grid) {
+			for(const cell of row) {
+				cell[1]('');
+			};
+			disabledPegsSignal[1](i !== 0);
+			i += 1;
+		};
+	}
 	function calculateResults(row: Signal<string>[]): Answer[] {
 		const arr = row.map(x => x[0]());
 		const chosen = [...chosenColors];
@@ -40,20 +56,27 @@ const Game: Component = () => {
 			result.push(Answer.WrongColorWrongSpot);
 		}
 		if(result.every(x => x === Answer.CorrectColorCorrectSpot)){
-			setShowChosen(true);
+			setGameOver(true);
 		}
 		console.log(result);
 		return result;
 	}
-	createEffect(() => console.log(showChosen()));
 	return <>
+		<Show when={gameOver()}>
+			<Portal>
+				<div class={styles.modal}>
+					<p>You {playerWon() ? "Won" : "Lost"}!</p>
+					<button onclick={reset}>Play again?</button>
+				</div>
+			</Portal>
+		</Show>
 		<div class={styles.vflex}>
 			<h1 class={styles.title}>Mastermind</h1>
 			<div class={styles.row}>
 				<For each={chosenColors}>{ color =>
 					<Peg
 						class={styles.medium}
-						color={showChosen() ? color : grey}
+						color={gameOver() ? color : grey}
 						static
 					/>
 				}</For>
@@ -76,7 +99,11 @@ const Game: Component = () => {
 							display={displayButton()}
 							onclick={() => {
 								const idx = i() + 1;
-								if(idx >= grid.length) return;
+								if(idx >= grid.length) {
+									setPlayerWon(false);
+									setGameOver(true);
+									return
+								};
 								grid[idx].disabledPegsSignal[1](false);
 							}}
 						/>
