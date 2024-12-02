@@ -13,7 +13,8 @@ const Game: Component = () => {
 	const [gameOver, setGameOver] = createSignal(false);
 	const [playerWon, setPlayerWon] = createSignal(true);
 	const getChosenColors = () => Array.from({ length: columnCount }, getRandomColor);
-	let chosenColors = getChosenColors();
+	let [chosenColors, setChosenColors] = createSignal(getChosenColors());
+	const resetChosenColors = () => setChosenColors(getChosenColors());
 	const grid = Array.from({ length: rowCount }, (_, i) =>
 		({
 			row: Array.from({ length: columnCount }, () => createSignal('')),
@@ -23,7 +24,7 @@ const Game: Component = () => {
 	function reset() {
 		setGameOver(false);
 		setPlayerWon(true);
-		chosenColors = getChosenColors();
+		resetChosenColors();
 		let i = 0;
 		for(const { row, disabledPegsSignal } of grid) {
 			for(const cell of row) {
@@ -35,10 +36,11 @@ const Game: Component = () => {
 	}
 	function calculateResults(row: Signal<string>[]): Answer[] {
 		const arr = row.map(x => x[0]());
-		const chosen = [...chosenColors];
+		const chosen = [...chosenColors()];
 		console.log(arr, chosen);
 		const result: Answer[] = [];
 		for(let i = 0; i < arr.length; i++) {
+			console.log(arr[i], chosen[i]);
 			if(arr[i] === chosen[i]) {
 				arr[i] = chosen[i] =  '';
 				result.push(Answer.CorrectColorCorrectSpot);
@@ -73,7 +75,7 @@ const Game: Component = () => {
 		<div class={styles.vflex}>
 			<h1 class={styles.title}>Mastermind</h1>
 			<div class={styles.row}>
-				<For each={chosenColors}>{ color =>
+				<For each={chosenColors()}>{ color =>
 					<Peg
 						class={styles.medium}
 						color={gameOver() ? color : grey}
